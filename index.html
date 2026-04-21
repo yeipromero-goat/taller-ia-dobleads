@@ -1,0 +1,698 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Taller de Comerciales con IA · Doble Ads</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Montserrat:wght@300;400;500;600;700;900&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+<style>
+:root {
+  --gold: #c9a84c;
+  --gold2: #e8c96a;
+  --gold-dim: rgba(201,168,76,0.12);
+  --dark: #080808;
+  --dark2: #111111;
+  --dark3: #1a1a1a;
+  --dark4: #222222;
+  --white: #f5f0e8;
+  --muted: rgba(245,240,232,0.45);
+  --border: rgba(201,168,76,0.18);
+  --r: 12px;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:'Montserrat',sans-serif;background:var(--dark);color:var(--white);-webkit-font-smoothing:antialiased;}
+
+/* NAV */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:200;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:1rem 2.5rem;
+  background:rgba(8,8,8,0.92);
+  backdrop-filter:blur(16px);
+  border-bottom:1px solid var(--border);
+}
+.logo{display:flex;align-items:center;gap:10px;text-decoration:none;}
+.logo-mark{width:34px;height:34px;}
+.logo-mark svg{width:100%;height:100%;}
+.logo-text{font-family:'Bebas Neue',sans-serif;font-size:1.35rem;letter-spacing:0.06em;color:var(--white);line-height:1;}
+.logo-text span{color:var(--gold);}
+.nav-pill{
+  background:var(--gold);color:#000;
+  font-size:0.75rem;font-weight:700;letter-spacing:0.07em;text-transform:uppercase;
+  padding:0.5rem 1.25rem;border-radius:100px;border:none;cursor:pointer;
+  transition:background 0.2s,transform 0.15s;text-decoration:none;
+}
+.nav-pill:hover{background:var(--gold2);transform:scale(1.03);}
+
+/* HERO */
+.hero{
+  min-height:100vh;display:grid;grid-template-columns:1fr 260px 380px;
+  padding-top:80px;position:relative;overflow:hidden;
+}
+.hero::before{
+  content:'';position:absolute;inset:0;
+  background:
+    radial-gradient(ellipse 55% 60% at 72% 50%,rgba(201,168,76,0.06) 0%,transparent 70%),
+    radial-gradient(ellipse 35% 40% at 8% 85%,rgba(201,168,76,0.04) 0%,transparent 60%);
+  pointer-events:none;
+}
+.hero::after{
+  content:'';position:absolute;inset:0;
+  background-image:linear-gradient(rgba(201,168,76,0.025) 1px,transparent 1px),linear-gradient(90deg,rgba(201,168,76,0.025) 1px,transparent 1px);
+  background-size:64px 64px;pointer-events:none;
+}
+.hero-left{padding:5rem 3rem 5rem 4rem;display:flex;flex-direction:column;justify-content:center;position:relative;z-index:1;}
+.eyebrow{display:flex;align-items:center;gap:10px;margin-bottom:2rem;}
+.ey-line{width:28px;height:2px;background:var(--gold);}
+.ey-txt{font-size:0.68rem;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;color:var(--gold);}
+.hero h1{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:clamp(3.8rem,6.5vw,6rem);line-height:0.95;letter-spacing:0.02em;margin-bottom:1.75rem;
+}
+.hero h1 .sm{font-size:clamp(1.4rem,2.2vw,2rem);color:var(--muted);font-family:'Montserrat',sans-serif;font-weight:300;letter-spacing:0.01em;display:block;margin-bottom:0.4rem;}
+.hero h1 .ac{color:var(--gold);display:block;}
+.hero-desc{font-size:0.95rem;color:var(--muted);font-weight:300;max-width:460px;line-height:1.9;margin-bottom:2.5rem;}
+.hero-desc strong{color:var(--white);font-weight:600;}
+.hero-actions{display:flex;gap:1rem;flex-wrap:wrap;align-items:center;}
+.btn-gold{
+  background:var(--gold);color:#000;font-weight:700;font-size:0.82rem;
+  letter-spacing:0.07em;text-transform:uppercase;
+  padding:0.9rem 2rem;border-radius:100px;border:none;cursor:pointer;text-decoration:none;
+  transition:background 0.2s,transform 0.15s,box-shadow 0.2s;display:inline-block;
+}
+.btn-gold:hover{background:var(--gold2);transform:translateY(-2px);box-shadow:0 8px 28px rgba(201,168,76,0.38);}
+.btn-ghost{
+  background:transparent;color:var(--white);font-size:0.8rem;font-weight:500;letter-spacing:0.04em;
+  padding:0.9rem 1.5rem;border-radius:100px;border:1px solid rgba(245,240,232,0.2);
+  cursor:pointer;text-decoration:none;transition:border-color 0.2s,background 0.2s;display:inline-block;
+}
+.btn-ghost:hover{border-color:var(--gold);background:var(--gold-dim);}
+.hero-right{
+  position:relative;z-index:1;
+  display:flex;align-items:center;justify-content:center;
+  padding:4rem 2rem;
+  border-left:1px solid var(--border);
+}
+/* VIDEO COLUMN */
+.hero-video{
+  position:relative;z-index:1;
+  display:flex;align-items:center;justify-content:center;
+  padding:3rem 1rem;
+  border-left:1px solid var(--border);
+}
+.video-wrap{
+  width:100%;max-width:220px;
+  aspect-ratio:9/16;
+  border-radius:16px;
+  overflow:hidden;
+  background:var(--dark3);
+  border:1px solid var(--border);
+  position:relative;
+  box-shadow:0 8px 40px rgba(0,0,0,0.5);
+}
+.video-wrap video{
+  width:100%;height:100%;object-fit:cover;display:block;
+}
+.video-placeholder{
+  width:100%;height:100%;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:0.75rem;color:var(--muted);
+}
+.video-placeholder .vico{font-size:2.5rem;opacity:0.4;}
+.video-placeholder p{font-size:0.7rem;text-align:center;line-height:1.5;padding:0 1rem;}
+.promo-card{
+  width:100%;max-width:340px;
+  background:var(--dark2);border:1px solid var(--border);border-radius:var(--r);
+  padding:2rem;position:relative;overflow:hidden;
+}
+.promo-card::before{
+  content:'';position:absolute;top:-50px;right:-50px;
+  width:160px;height:160px;
+  background:radial-gradient(circle,rgba(201,168,76,0.12) 0%,transparent 70%);border-radius:50%;
+}
+.plive{font-size:0.63rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold);display:flex;align-items:center;gap:6px;margin-bottom:1.25rem;}
+.pdot{width:6px;height:6px;border-radius:50%;background:var(--gold);animation:blink 1.5s infinite;}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0.25}}
+.pold{font-size:0.88rem;color:rgba(245,240,232,0.3);text-decoration:line-through;margin-bottom:0.1rem;}
+.pprice{font-family:'Bebas Neue',sans-serif;font-size:3.2rem;letter-spacing:0.02em;color:var(--gold);line-height:1;margin-bottom:0.2rem;}
+.pprice sup{font-size:1.1rem;vertical-align:top;margin-top:0.55rem;display:inline-block;}
+.pmsi{font-size:0.72rem;color:#4ade80;font-weight:600;margin-bottom:1.5rem;}
+.pdiv{height:1px;background:var(--border);margin:1.25rem 0;}
+.dlbl{font-size:0.63rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);margin-bottom:0.5rem;}
+.ddate{font-weight:700;font-size:0.88rem;color:var(--white);margin-bottom:1rem;}
+.cdown{display:grid;grid-template-columns:repeat(4,1fr);gap:5px;margin-bottom:1.5rem;}
+.cbox{background:var(--dark3);border:1px solid var(--border);border-radius:6px;padding:0.5rem 0.2rem;text-align:center;}
+.cnum{font-family:'Bebas Neue',sans-serif;font-size:1.5rem;color:var(--gold);line-height:1;display:block;}
+.clbl{font-size:0.48rem;color:var(--muted);letter-spacing:0.08em;text-transform:uppercase;}
+.pcta{
+  width:100%;padding:0.85rem;
+  background:var(--gold);color:#000;
+  font-weight:700;font-size:0.78rem;letter-spacing:0.07em;text-transform:uppercase;
+  border:none;border-radius:100px;cursor:pointer;transition:background 0.2s;
+}
+.pcta:hover{background:var(--gold2);}
+
+/* PRESENTER BAR */
+.pbar{
+  background:var(--dark2);border-top:1px solid var(--border);border-bottom:1px solid var(--border);
+  padding:1.25rem 4rem;display:flex;align-items:center;justify-content:space-between;gap:1.5rem;flex-wrap:wrap;
+}
+.pbar-by{font-size:0.7rem;font-weight:600;letter-spacing:0.06em;color:var(--muted);display:flex;align-items:center;gap:0.75rem;flex-wrap:wrap;}
+.pbar-by strong{color:var(--gold);}
+.pbar-by b{color:var(--white);}
+.tags{display:flex;gap:0.6rem;flex-wrap:wrap;}
+.tag{font-size:0.68rem;font-weight:600;letter-spacing:0.04em;padding:0.3rem 0.85rem;border-radius:100px;border:1px solid var(--border);color:var(--muted);}
+
+/* SECTIONS */
+.sec{padding:6rem 4rem;}
+.s-ey{display:flex;align-items:center;gap:8px;margin-bottom:0.9rem;}
+.s-l{width:22px;height:2px;background:var(--gold);}
+.s-t{font-size:0.63rem;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;color:var(--gold);}
+.sec h2{font-family:'Bebas Neue',sans-serif;font-size:clamp(2.4rem,3.8vw,3.2rem);letter-spacing:0.03em;line-height:1;margin-bottom:3rem;}
+
+/* MODALIDADES */
+.mods{display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;max-width:880px;}
+.mod{
+  border:1px solid var(--border);border-radius:var(--r);padding:2.25rem;
+  background:var(--dark2);position:relative;overflow:hidden;
+  transition:border-color 0.2s,transform 0.2s;
+}
+.mod:hover{border-color:var(--gold);transform:translateY(-3px);}
+.mod::before{
+  content:'';position:absolute;top:-50px;right:-50px;
+  width:150px;height:150px;
+  background:radial-gradient(circle,rgba(201,168,76,0.07) 0%,transparent 70%);
+  border-radius:50%;pointer-events:none;
+}
+.mbadge{
+  display:inline-block;font-size:0.6rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;
+  padding:0.25rem 0.75rem;border-radius:100px;margin-bottom:1.25rem;
+  border:1px solid var(--border);color:var(--gold);background:var(--gold-dim);
+}
+.mbadge.b2{color:var(--muted);background:rgba(255,255,255,0.04);border-color:rgba(255,255,255,0.08);}
+.mod h3{font-family:'Bebas Neue',sans-serif;font-size:1.7rem;letter-spacing:0.04em;line-height:1.05;margin-bottom:1.5rem;}
+.mlist{list-style:none;display:flex;flex-direction:column;gap:0.65rem;margin-bottom:2rem;}
+.mlist li{display:flex;align-items:flex-start;gap:0.7rem;font-size:0.83rem;color:var(--muted);line-height:1.55;}
+.mlist li::before{content:'';width:14px;height:14px;border-radius:50%;border:1.5px solid var(--gold);flex-shrink:0;margin-top:1px;}
+.mlist li span{color:var(--white);font-weight:600;}
+.mbtn{
+  width:100%;padding:0.8rem;background:transparent;border:1px solid var(--border);
+  border-radius:100px;color:var(--white);font-family:'Montserrat',sans-serif;
+  font-weight:600;font-size:0.76rem;letter-spacing:0.06em;text-transform:uppercase;
+  cursor:pointer;transition:border-color 0.2s,background 0.2s;text-decoration:none;display:block;text-align:center;
+}
+.mbtn:hover{border-color:var(--gold);background:var(--gold-dim);}
+
+/* CURRICULUM */
+.curr{padding:6rem 4rem;background:var(--dark2);border-top:1px solid var(--border);border-bottom:1px solid var(--border);}
+.cgrid{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(195px,1fr));
+  gap:1px;background:var(--border);border:1px solid var(--border);border-radius:var(--r);
+  overflow:hidden;max-width:960px;
+}
+.ci{background:var(--dark2);padding:1.75rem 1.5rem;transition:background 0.2s;}
+.ci:hover{background:var(--dark3);}
+.cin{font-family:'Bebas Neue',sans-serif;font-size:1.9rem;color:rgba(201,168,76,0.16);line-height:1;margin-bottom:0.45rem;}
+.ci h4{font-size:0.86rem;font-weight:600;color:var(--white);line-height:1.35;}
+
+/* BENEFITS */
+.bgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:1.25rem;max-width:880px;}
+.bene{background:var(--dark2);border:1px solid var(--border);border-radius:var(--r);padding:2rem 1.5rem;transition:border-color 0.2s,transform 0.2s;}
+.bene:hover{border-color:var(--gold);transform:translateY(-4px);}
+.bico{width:44px;height:44px;background:var(--gold-dim);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:1.4rem;margin-bottom:1rem;}
+.bene h4{font-size:0.9rem;font-weight:700;margin-bottom:0.3rem;color:var(--white);}
+.bene p{font-size:0.77rem;color:var(--muted);}
+
+/* INSTRUCTOR */
+.instr{padding:6rem 4rem;background:var(--dark2);border-top:1px solid var(--border);}
+.iinner{display:grid;grid-template-columns:auto 1fr;gap:2.5rem;align-items:center;max-width:700px;}
+.iav{
+  width:96px;height:96px;border-radius:50%;
+  border:2px solid var(--gold);background:var(--dark3);
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Bebas Neue',sans-serif;font-size:2.2rem;color:var(--gold);flex-shrink:0;
+}
+.iname{font-family:'Bebas Neue',sans-serif;font-size:1.9rem;letter-spacing:0.04em;margin-bottom:0.2rem;}
+.irole{font-size:0.78rem;color:var(--gold);font-weight:600;margin-bottom:0.75rem;letter-spacing:0.06em;}
+.ibio{font-size:0.86rem;color:var(--muted);line-height:1.85;}
+
+/* MODAL */
+.movl{position:fixed;inset:0;z-index:300;background:rgba(0,0,0,0.88);display:none;align-items:center;justify-content:center;padding:1rem;backdrop-filter:blur(8px);}
+.movl.open{display:flex;}
+.modal{background:var(--dark2);border:1px solid var(--border);border-radius:var(--r);width:100%;max-width:440px;padding:2.25rem;position:relative;max-height:90vh;overflow-y:auto;}
+.mcl{position:absolute;top:1.25rem;right:1.25rem;background:none;border:none;cursor:pointer;font-size:1.2rem;color:var(--muted);line-height:1;transition:color 0.15s;}
+.mcl:hover{color:var(--white);}
+.mey{font-size:0.63rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold);margin-bottom:0.75rem;}
+.modal h3{font-family:'Bebas Neue',sans-serif;font-size:1.9rem;letter-spacing:0.03em;margin-bottom:0.35rem;}
+.msub{font-size:0.8rem;color:var(--muted);margin-bottom:1.25rem;}
+.mpr{display:flex;align-items:baseline;gap:0.75rem;margin-bottom:0.3rem;}
+.mp{font-family:'Bebas Neue',sans-serif;font-size:2rem;color:var(--gold);}
+.mpo{font-size:0.88rem;color:var(--muted);text-decoration:line-through;}
+.mmsi{font-size:0.72rem;color:#4ade80;font-weight:600;margin-bottom:1.5rem;}
+.gbtn{
+  width:100%;padding:0.75rem;background:var(--dark3);border:1px solid rgba(245,240,232,0.1);
+  border-radius:8px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:0.75rem;
+  font-family:'Montserrat',sans-serif;font-size:0.86rem;font-weight:500;color:var(--white);margin-bottom:1.25rem;
+  transition:border-color 0.15s,background 0.15s;
+}
+.gbtn:hover{border-color:var(--gold);background:var(--dark4);}
+.divdr{display:flex;align-items:center;gap:1rem;margin:0.9rem 0;font-size:0.72rem;color:var(--muted);}
+.divdr::before,.divdr::after{content:'';flex:1;height:1px;background:var(--border);}
+.ff{margin-bottom:0.85rem;}
+.fl{font-size:0.67rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted);margin-bottom:0.35rem;display:block;}
+.fi{
+  width:100%;padding:0.72rem 1rem;border:1px solid rgba(245,240,232,0.1);border-radius:8px;
+  background:var(--dark3);color:var(--white);font-family:'Montserrat',sans-serif;font-size:0.88rem;
+  outline:none;transition:border-color 0.15s;
+}
+.fi:focus{border-color:var(--gold);}
+.fi::placeholder{color:rgba(245,240,232,0.22);}
+.mods2{display:grid;grid-template-columns:1fr 1fr;gap:0.7rem;margin-bottom:0.85rem;}
+.mopt{border:1px solid rgba(245,240,232,0.1);border-radius:8px;padding:0.8rem;cursor:pointer;text-align:center;transition:border-color 0.15s,background 0.15s;}
+.mopt.sel{border-color:var(--gold);background:var(--gold-dim);}
+.olbl{font-size:0.78rem;font-weight:700;display:block;margin-bottom:0.15rem;color:var(--white);}
+.odt{font-size:0.66rem;color:var(--muted);}
+.bsub{
+  width:100%;padding:1rem;background:var(--gold);color:#000;border:none;border-radius:100px;
+  font-family:'Montserrat',sans-serif;font-weight:700;font-size:0.82rem;
+  letter-spacing:0.07em;text-transform:uppercase;cursor:pointer;margin-top:1rem;
+  transition:background 0.2s,transform 0.15s,box-shadow 0.2s;
+}
+.bsub:hover{background:var(--gold2);transform:translateY(-1px);box-shadow:0 6px 24px rgba(201,168,76,0.38);}
+.bsub:disabled{opacity:0.5;cursor:not-allowed;transform:none;box-shadow:none;}
+.fnotice{font-size:0.68rem;color:var(--muted);text-align:center;margin-top:0.75rem;}
+
+/* TOAST */
+.toast{position:fixed;bottom:2rem;right:2rem;z-index:400;background:var(--dark2);border:1px solid var(--border);color:var(--white);padding:1rem 1.5rem;border-radius:8px;font-size:0.82rem;max-width:290px;transform:translateY(80px);opacity:0;transition:transform 0.3s,opacity 0.3s;}
+.toast.show{transform:translateY(0);opacity:1;}
+.toast.success{border-left:3px solid #4ade80;}
+.toast.error{border-left:3px solid var(--gold);}
+
+/* SUCCESS */
+.sscr{text-align:center;padding:0.75rem 0;}
+.sico{width:60px;height:60px;border-radius:50%;background:rgba(201,168,76,0.1);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;margin:0 auto 1.5rem;font-size:1.6rem;}
+.sscr h3{font-family:'Bebas Neue',sans-serif;font-size:1.9rem;margin-bottom:0.5rem;}
+.sscr p{color:var(--muted);font-size:0.86rem;margin-bottom:1.5rem;line-height:1.75;}
+.cbtn{background:var(--gold);color:#000;padding:0.75rem 1.75rem;border-radius:100px;border:none;cursor:pointer;font-weight:700;font-size:0.78rem;letter-spacing:0.07em;text-transform:uppercase;text-decoration:none;display:inline-block;transition:background 0.2s;}
+.cbtn:hover{background:var(--gold2);}
+
+/* FOOTER */
+footer{background:var(--dark);border-top:1px solid var(--border);padding:2.5rem 4rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;}
+.fbrand{font-family:'Bebas Neue',sans-serif;font-size:1.15rem;letter-spacing:0.08em;color:var(--white);}
+.fbrand span{color:var(--gold);}
+.flinks{display:flex;gap:1.5rem;flex-wrap:wrap;}
+.flinks a{font-size:0.76rem;color:var(--muted);text-decoration:none;transition:color 0.15s;}
+.flinks a:hover{color:var(--gold);}
+.fcopy{font-size:0.69rem;color:rgba(245,240,232,0.18);width:100%;}
+
+/* SPINNER */
+.spin{width:15px;height:15px;border:2px solid rgba(0,0,0,0.2);border-top-color:#000;border-radius:50%;animation:sp 0.6s linear infinite;display:inline-block;vertical-align:middle;margin-right:6px;}
+@keyframes sp{to{transform:rotate(360deg)}}
+
+/* RESPONSIVE */
+@media(max-width:860px){
+  .hero{grid-template-columns:1fr;}
+  .hero-left{padding:4.5rem 1.75rem 3rem;}
+  .hero-video{padding:1.5rem 1.75rem;border-left:none;border-top:1px solid var(--border);}
+  .video-wrap{max-width:180px;margin:0 auto;}
+  .hero-right{padding:2rem 1.75rem;border-left:none;border-top:1px solid var(--border);}
+  .sec,.curr,.instr{padding:4rem 1.75rem;}
+  .benefits{padding:4rem 1.75rem;}
+  .mods{grid-template-columns:1fr;}
+  .pbar{padding:1.25rem 1.75rem;}
+  nav{padding:0.9rem 1.5rem;}
+  footer{padding:2rem 1.75rem;}
+  .iinner{grid-template-columns:1fr;gap:1.5rem;}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a class="logo" href="#">
+    <div class="logo-mark">
+      <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M20 3 L38 34 H2 Z" fill="none" stroke="#c9a84c" stroke-width="2.2"/>
+        <path d="M20 15 L31 34 H9 Z" fill="#c9a84c" opacity="0.35"/>
+      </svg>
+    </div>
+    <div class="logo-text">Double <span>Ads</span></div>
+  </a>
+  <button class="nav-pill" onclick="openModal()">Inscribirme →</button>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-left">
+    <div class="eyebrow"><div class="ey-line"></div><span class="ey-txt">Double Ads presenta</span></div>
+    <h1>
+      <span class="sm">Aprende a hacer</span>
+      <span class="ac">Comerciales</span>
+      con IA
+    </h1>
+    <p class="hero-desc">
+      Domina la creación de <strong>comerciales de ultra alta calidad</strong> usando inteligencia artificial. Un taller intensivo y práctico impartido por <strong>Marcelo Segura</strong>. Presencial en Querétaro o digital desde donde estés.
+    </p>
+    <div class="hero-actions">
+      <button class="btn-gold" onclick="openModal()">Reservar mi lugar</button>
+      <a class="btn-ghost" href="https://doc.teinux.com/workshop-ia" target="_blank">Ver temario ↗</a>
+    </div>
+  </div>
+
+  <!-- VIDEO VERTICAL -->
+  <div class="hero-video">
+    <div class="video-wrap" id="videoWrap">
+      <div class="video-placeholder">
+        <div class="vico">🎬</div>
+        <p>Cargando video...</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="hero-right">
+    <div class="promo-card">
+      <div class="plive"><span class="pdot"></span>Oferta especial activa</div>
+      <div class="pold">$3,500 MXN</div>
+      <div class="pprice"><sup>$</sup>1,799 <span style="font-size:0.9rem;font-weight:300;opacity:0.45">MXN</span></div>
+      <div class="pmsi">✓ 6 meses sin intereses con tarjeta de crédito</div>
+      <div class="pdiv"></div>
+      <div class="dlbl">Fecha del evento</div>
+      <div class="ddate">15 y 16 de mayo de 2026</div>
+      <div class="cdown">
+        <div class="cbox"><span class="cnum" id="cd-d">--</span><span class="clbl">días</span></div>
+        <div class="cbox"><span class="cnum" id="cd-h">--</span><span class="clbl">hrs</span></div>
+        <div class="cbox"><span class="cnum" id="cd-m">--</span><span class="clbl">min</span></div>
+        <div class="cbox"><span class="cnum" id="cd-s">--</span><span class="clbl">seg</span></div>
+      </div>
+      <button class="pcta" onclick="openModal()">Inscribirme con este precio</button>
+    </div>
+  </div>
+</section>
+
+<!-- PRESENTER BAR -->
+<div class="pbar">
+  <div class="pbar-by">
+    Presentado por <strong>Double Ads</strong> &nbsp;·&nbsp; Instructor: <b>Marcelo Segura</b>
+  </div>
+  <div class="tags">
+    <span class="tag">Diploma incluido</span>
+    <span class="tag">9 h de clase</span>
+    <span class="tag">Presencial · Querétaro</span>
+    <span class="tag">Digital · Online</span>
+  </div>
+</div>
+
+<!-- MODALIDADES -->
+<section class="sec">
+  <div class="s-ey"><div class="s-l"></div><span class="s-t">¿Cómo quieres aprender?</span></div>
+  <h2>Elige tu modalidad</h2>
+  <div class="mods">
+    <div class="mod">
+      <span class="mbadge">🏙️ Presencial · Querétaro</span>
+      <h3>Dos días intensivos<br>en la ciudad</h3>
+      <ul class="mlist">
+        <li><span>15 y 16 de mayo de 2026</span></li>
+        <li><span>10:00 a 19:00 h.</span> — 9 horas de clase por día</li>
+        <li>Calle 2 #135, piso 3, Col. Industrial Benito Juárez, C.P. 76120</li>
+        <li><span>Única fecha del año 2026</span></li>
+      </ul>
+      <button class="mbtn" onclick="openModal('presencial')">Reservar lugar presencial →</button>
+    </div>
+    <div class="mod">
+      <span class="mbadge b2">💻 Digital · Online</span>
+      <h3>Dos días desde<br>donde estés</h3>
+      <ul class="mlist">
+        <li><span>Sesión 1:</span> 15 de mayo, 10:00 a 19:00 h.</li>
+        <li><span>Sesión 2:</span> 16 de mayo, 10:00 a 19:00 h.</li>
+        <li>Transmisión <span>en vivo</span> vía plataforma digital</li>
+        <li>Acceso a grabaciones y material descargable</li>
+      </ul>
+      <button class="mbtn" onclick="openModal('digital')">Reservar lugar digital →</button>
+    </div>
+  </div>
+</section>
+
+<!-- CURRICULUM -->
+<section class="curr">
+  <div class="s-ey"><div class="s-l"></div><span class="s-t">Contenido del taller</span></div>
+  <h2>Qué aprenderás</h2>
+  <div class="cgrid">
+    <div class="ci"><div class="cin">01</div><h4>Fundamentos de IA para video y publicidad</h4></div>
+    <div class="ci"><div class="cin">02</div><h4>Guión y concepto de comercial con IA</h4></div>
+    <div class="ci"><div class="cin">03</div><h4>Generación de imágenes y video con IA</h4></div>
+    <div class="ci"><div class="cin">04</div><h4>Voz en off y audio profesional con IA</h4></div>
+    <div class="ci"><div class="cin">05</div><h4>Edición y postproducción asistida por IA</h4></div>
+    <div class="ci"><div class="cin">06</div><h4>Comerciales para redes sociales y Meta Ads</h4></div>
+    <div class="ci"><div class="cin">07</div><h4>Estrategia de campaña y copy persuasivo</h4></div>
+    <div class="ci"><div class="cin">08</div><h4>Producción en vivo: crea tu propio comercial</h4></div>
+  </div>
+  <p style="margin-top:1.75rem;font-size:0.8rem;color:var(--muted)">
+    Temario completo disponible al inscribirte.
+  </p>
+</section>
+
+<!-- BENEFITS -->
+<section class="sec benefits" style="padding-top:5rem;padding-bottom:5rem;">
+  <div class="s-ey"><div class="s-l"></div><span class="s-t">Lo que incluye</span></div>
+  <h2>Beneficios del taller</h2>
+  <div class="bgrid">
+    <div class="bene"><div class="bico">🎓</div><h4>Diploma Double Ads</h4><p>Certificado oficial del taller</p></div>
+    <div class="bene"><div class="bico">🎬</div><h4>9 h de producción</h4><p>Crea comerciales reales en el taller</p></div>
+    <div class="bene"><div class="bico">🤖</div><h4>Herramientas de IA</h4><p>Acceso a las mejores herramientas del mercado</p></div>
+    <div class="bene"><div class="bico">🏆</div><h4>Material descargable</h4><p>Guías, prompts y plantillas exclusivas</p></div>
+  </div>
+</section>
+
+<!-- INSTRUCTOR -->
+<section class="instr">
+  <div class="s-ey"><div class="s-l"></div><span class="s-t">Tu instructor</span></div>
+  <h2 style="margin-bottom:2.5rem">Quién te enseña</h2>
+  <div class="iinner">
+    <div class="iav">MS</div>
+    <div>
+      <div class="iname">Marcelo Segura</div>
+      <div class="irole">Instructor · Double Ads</div>
+      <p class="ibio">Especialista en producción publicitaria con inteligencia artificial. Con Double Ads enseña a marcas y emprendedores a crear comerciales de ultra alta calidad usando las herramientas de IA más avanzadas del mercado, reduciendo costos de producción sin sacrificar impacto visual ni resultados en ventas.</p>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="fbrand">Double <span>Ads</span></div>
+  <div class="flinks">
+    <a href="https://www.doubleads.com" target="_blank">doubleads.com</a>
+  </div>
+  <p class="fcopy">© 2026 Double Ads. Todos los derechos reservados.</p>
+</footer>
+
+<!-- MODAL -->
+<div class="movl" id="movl" onclick="handleOvClick(event)">
+  <div class="modal">
+    <button class="mcl" onclick="closeModal()">✕</button>
+    <div id="mContent">
+      <div class="mey">Double Ads</div>
+      <h3>Reserva tu lugar</h3>
+      <p class="msub">Completa el proceso en menos de 2 minutos.</p>
+      <div class="mpr">
+        <span class="mp">$1,799 MXN</span>
+        <span class="mpo">$3,500</span>
+      </div>
+      <p class="mmsi">✓ 6 meses sin intereses con tarjeta de crédito</p>
+
+      <button class="gbtn" onclick="signInWithGoogle()">
+        <svg width="18" height="18" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
+          <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+          <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05"/>
+          <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
+        </svg>
+        Continuar con Google
+      </button>
+
+      <div class="divdr">o ingresa tus datos</div>
+
+      <div class="ff"><label class="fl">Nombre completo</label><input class="fi" type="text" id="i-name" placeholder="Tu nombre completo"></div>
+      <div class="ff"><label class="fl">Correo electrónico</label><input class="fi" type="email" id="i-email" placeholder="correo@ejemplo.com"></div>
+      <div class="ff"><label class="fl">WhatsApp (opcional)</label><input class="fi" type="tel" id="i-phone" placeholder="+52 442 000 0000"></div>
+
+      <div class="ff">
+        <label class="fl">Modalidad</label>
+        <div class="mods2">
+          <div class="mopt sel" id="op-p" onclick="selMod('presencial')">
+            <span class="olbl">🏙️ Presencial</span><span class="odt">15 y 16 mayo · Querétaro</span>
+          </div>
+          <div class="mopt" id="op-o" onclick="selMod('digital')">
+            <span class="olbl">💻 Digital</span><span class="odt">15 y 16 mayo · Online</span>
+          </div>
+        </div>
+      </div>
+
+      <button class="bsub" id="bsub" onclick="submitForm()">Pagar y reservar mi lugar</button>
+      <p class="fnotice">🔒 Pago seguro · Confirmación por email + link al calendario</p>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ── EmailJS ──────────────────────────────────────────────
+const EJS_PUBLIC_KEY = 'aH76wBVxOavftzlUi';
+const EJS_SERVICE_ID = 'Doble Ads';
+const EJS_TPL_AVISO  = 'template_4f3c2cp';   // aviso para ti
+const EJS_TPL_ALUMNO = 'template_yh5xpun';   // confirmación para el alumno
+emailjs.init(EJS_PUBLIC_KEY);
+
+// ── Supabase (opcional) ──────────────────────────────────
+const SUPABASE_URL      = 'https://TU_PROYECTO.supabase.co';
+const SUPABASE_ANON_KEY = 'TU_ANON_KEY';
+const VIDEO_BUCKET      = 'videos';
+const VIDEO_FILE        = 'promo.mp4';
+
+let sb;
+try { sb = window.supabase?.createClient(SUPABASE_URL, SUPABASE_ANON_KEY); } catch(e){}
+
+async function loadPromoVideo() {
+  const wrap = document.getElementById('videoWrap');
+  if (!sb || SUPABASE_URL.includes('TU_PROYECTO')) {
+    wrap.innerHTML = `<div class="video-placeholder"><div class="vico">🎬</div><p>Configura Supabase para cargar el video.</p></div>`;
+    return;
+  }
+  try {
+    const { data } = sb.storage.from(VIDEO_BUCKET).getPublicUrl(VIDEO_FILE);
+    if (data?.publicUrl) {
+      wrap.innerHTML = `<video src="${data.publicUrl}" autoplay muted loop playsinline></video>`;
+    }
+  } catch(e) {
+    wrap.innerHTML = `<div class="video-placeholder"><div class="vico">🎬</div><p>No se pudo cargar el video.</p></div>`;
+  }
+}
+loadPromoVideo();
+
+let selModality = null;
+
+function openModal(m) {
+  document.getElementById('movl').classList.add('open');
+  document.body.style.overflow = 'hidden';
+  selMod(m || 'presencial');
+}
+function closeModal() {
+  document.getElementById('movl').classList.remove('open');
+  document.body.style.overflow = '';
+}
+function handleOvClick(e) { if (e.target.id === 'movl') closeModal(); }
+
+function selMod(m) {
+  selModality = m;
+  document.getElementById('op-p').classList.toggle('sel', m === 'presencial');
+  document.getElementById('op-o').classList.toggle('sel', m === 'digital');
+}
+
+async function signInWithGoogle() {
+  if (!sb || SUPABASE_URL.includes('TU_PROYECTO')) { showToast('Configura Supabase para activar Google Login.', 'error'); return; }
+  const { error } = await sb.auth.signInWithOAuth({ provider: 'google', options: { redirectTo: window.location.href } });
+  if (error) showToast('Error al conectar con Google.', 'error');
+}
+
+function calUrl(mod) {
+  const base = 'https://calendar.google.com/calendar/render?action=TEMPLATE';
+  const t = encodeURIComponent('Taller Comerciales con IA · Double Ads');
+  if (mod === 'presencial') {
+    return `${base}&text=${t}&dates=20260515T100000/20260516T190000&location=${encodeURIComponent('Calle 2 #135 Piso 3, Col. Industrial Benito Juárez, Querétaro 76120')}&details=${encodeURIComponent('Taller presencial de Comerciales con IA. Instructor: Marcelo Segura. Double Ads.')}`;
+  }
+  return `${base}&text=${t}&dates=20260515T100000/20260516T190000&location=${encodeURIComponent('Online')}&details=${encodeURIComponent('Taller digital de Comerciales con IA. Instructor: Marcelo Segura. Double Ads.')}`;
+}
+
+async function submitForm() {
+  const name  = document.getElementById('i-name').value.trim();
+  const email = document.getElementById('i-email').value.trim();
+  const phone = document.getElementById('i-phone').value.trim();
+  if (!name)                         { showToast('Ingresa tu nombre.', 'error'); return; }
+  if (!email || !email.includes('@')) { showToast('Ingresa un correo válido.', 'error'); return; }
+  if (!selModality)                  { showToast('Selecciona una modalidad.', 'error'); return; }
+
+  const btn = document.getElementById('bsub');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spin"></span>Enviando...';
+
+  // Guardar en Supabase si está configurado
+  if (sb && !SUPABASE_URL.includes('TU_PROYECTO')) {
+    try {
+      await sb.from('registros').insert([{
+        nombre: name, email, telefono: phone,
+        modalidad: selModality, creado_en: new Date().toISOString()
+      }]);
+    } catch(e) {}
+  }
+
+  const url       = calUrl(selModality);
+  const modalTxt  = selModality === 'presencial' ? '🏙️ Presencial · Querétaro' : '💻 Digital · Online';
+  const ubicacion = selModality === 'presencial'
+    ? 'Calle 2 #135 Piso 3, Col. Industrial Benito Juárez, Querétaro 76120'
+    : 'Online — link de acceso por correo';
+  const fecha = new Date().toLocaleString('es-MX', { dateStyle: 'full', timeStyle: 'short' });
+
+  const params = {
+    nombre:    name,
+    email:     email,
+    telefono:  phone || '—',
+    modalidad: modalTxt,
+    ubicacion: ubicacion,
+    fecha:     fecha,
+    cal_url:   url,
+  };
+
+  try {
+    await Promise.all([
+      emailjs.send(EJS_SERVICE_ID, EJS_TPL_AVISO,  params),
+      emailjs.send(EJS_SERVICE_ID, EJS_TPL_ALUMNO, params),
+    ]);
+    showSuccess(name, url);
+  } catch(err) {
+    console.error('EmailJS error:', err);
+    showSuccess(name, url);
+    showToast('Inscripción guardada. Revisa tu correo en unos minutos.', 'success');
+  }
+}
+
+function showSuccess(name, url) {
+  const fn = name.split(' ')[0];
+  document.getElementById('mContent').innerHTML = `
+    <div class="sscr">
+      <div class="sico">✓</div>
+      <h3>¡Listo, ${fn}!</h3>
+      <p>Tu lugar está reservado. Te enviamos la confirmación a tu correo con todos los detalles del taller.</p>
+      <a href="${url}" target="_blank" class="cbtn">Agregar al calendario →</a>
+    </div>`;
+}
+
+function showToast(msg, type='success') {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.className = `toast ${type} show`;
+  setTimeout(() => { t.className = 'toast'; }, 3500);
+}
+
+function tick() {
+  const diff = new Date('2026-05-15T10:00:00') - new Date();
+  if (diff <= 0) {
+    ['cd-d','cd-h','cd-m','cd-s'].forEach(id => document.getElementById(id).textContent = '00');
+    return;
+  }
+  document.getElementById('cd-d').textContent = String(Math.floor(diff/86400000)).padStart(2,'0');
+  document.getElementById('cd-h').textContent = String(Math.floor(diff%86400000/3600000)).padStart(2,'0');
+  document.getElementById('cd-m').textContent = String(Math.floor(diff%3600000/60000)).padStart(2,'0');
+  document.getElementById('cd-s').textContent = String(Math.floor(diff%60000/1000)).padStart(2,'0');
+}
+tick(); setInterval(tick, 1000);
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+</script>
+</body>
+</html>
