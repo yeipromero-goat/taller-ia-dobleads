@@ -285,6 +285,9 @@ nav{
 }
 .bsub:hover{background:var(--gold2);transform:translateY(-1px);box-shadow:0 6px 24px rgba(201,168,76,0.38);}
 .bsub:disabled{opacity:0.5;cursor:not-allowed;transform:none;box-shadow:none;}
+.oprice{display:block;font-family:'Bebas Neue',sans-serif;font-size:1.1rem;color:var(--gold);letter-spacing:0.04em;margin-top:2px;}
+#mpBrickContainer{margin:0.5rem 0;}
+#mpBrickContainer iframe{border-radius:var(--r)!important;}
 .fnotice{font-size:0.68rem;color:var(--muted);text-align:center;margin-top:0.75rem;}
 
 /* TOAST */
@@ -526,15 +529,16 @@ footer{background:var(--dark);border-top:1px solid var(--border);padding:2.5rem 
         <label class="fl">Modalidad</label>
         <div class="mods2">
           <div class="mopt sel" id="op-p" onclick="selMod('presencial')">
-            <span class="olbl">🏙️ Presencial</span><span class="odt">20 y 21 junio · Querétaro</span>
+            <span class="olbl">🏙️ Presencial</span><span class="odt">20 y 21 junio · Querétaro</span><span class="oprice">$1,799 MXN</span>
           </div>
           <div class="mopt" id="op-o" onclick="selMod('digital')">
-            <span class="olbl">💻 Digital</span><span class="odt">20 y 21 junio · Online</span>
+            <span class="olbl">💻 Digital</span><span class="odt">20 y 21 junio · Online</span><span class="oprice">$1,619 MXN</span>
           </div>
         </div>
       </div>
 
-      <button class="bsub" id="bsub" onclick="submitForm()">Pagar y reservar mi lugar</button>
+      <div id="priceDisplay" style="text-align:center;margin:0.75rem 0 0.5rem;font-family:'Bebas Neue',sans-serif;font-size:1.6rem;letter-spacing:0.04em;color:var(--gold);">$1,799 MXN</div>
+      <button class="bsub" id="bsub" onclick="submitForm()">Pagar con MercadoPago →</button>
       <p class="fnotice">🔒 Pago seguro · Confirmación por email + link al calendario</p>
     </div>
   </div>
@@ -544,12 +548,16 @@ footer{background:var(--dark);border-top:1px solid var(--border);padding:2.5rem 
 <div class="toast" id="toast"></div>
 
 <script>
-// ── EmailJS ──────────────────────────────────────────────
+// ── EmailJS ───────────────────────────────────────────────
 const EJS_PUBLIC_KEY = 'aH76wBVxOavftzlUi';
 const EJS_SERVICE_ID = 'Doble Ads';
 const EJS_TPL_AVISO  = 'template_4f3c2cp';
 const EJS_TPL_ALUMNO = 'template_yh5xpun';
 emailjs.init(EJS_PUBLIC_KEY);
+
+// ── Config ────────────────────────────────────────────────
+const PRICES = { presencial: 1799, digital: 1619 };
+const API_URL = '/api/pagar';
 
 // ── Video YouTube ─────────────────────────────────────────
 const YT_VIDEO_ID = 'fcCpMsP52uQ';
@@ -560,7 +568,47 @@ const YT_VIDEO_ID = 'fcCpMsP52uQ';
   }
 })();
 
-let selModality = null;
+// ── Leer status de regreso desde MP ──────────────────────
+(function() {
+  const params = new URLSearchParams(window.location.search);
+  const status = params.get('status');
+  const nombre = params.get('nombre') || '';
+  const modalidad = params.get('modalidad') || '';
+  if (!status) return;
+
+  if (status === 'success' || status === 'pending') {
+    // Abrir modal con pantalla de éxito
+    setTimeout(function() {
+      document.getElementById('movl').classList.add('open');
+      document.body.style.overflow = 'hidden';
+      const url = calUrl(modalidad === 'presencial' ? 'presencial' : 'digital');
+      const fn = nombre.split(' ')[0] || 'alumno';
+      const msg = status === 'success'
+        ? 'Pago confirmado. Te enviamos la confirmación a tu correo con todos los detalles del taller.'
+        : 'Pago en proceso. Te avisaremos por correo cuando se confirme.';
+      document.getElementById('mContent').innerHTML =
+        '<div class="sscr">' +
+        '<div class="sico">✓</div>' +
+        '<h3>¡Listo, ' + fn + '!</h3>' +
+        '<p>' + msg + '</p>' +
+        '<a href="' + url + '" target="_blank" class="cbtn">Agregar al calendario →</a>' +
+        '</div>';
+      // Enviar correos
+      sendEmails(nombre, params.get('email') || '', '', modalidad === 'presencial' ? 'presencial' : 'digital');
+    }, 300);
+  }
+
+  if (status === 'failure') {
+    setTimeout(function() {
+      showToast('El pago no se completó. Puedes intentar de nuevo.', 'error');
+    }, 300);
+  }
+
+  // Limpiar URL
+  window.history.replaceState({}, document.title, window.location.pathname);
+})();
+
+let selModality = 'presencial';
 
 function openModal(m) {
   document.getElementById('movl').classList.add('open');
@@ -577,6 +625,8 @@ function selMod(m) {
   selModality = m;
   document.getElementById('op-p').classList.toggle('sel', m === 'presencial');
   document.getElementById('op-o').classList.toggle('sel', m === 'digital');
+  const price = PRICES[m];
+  document.getElementById('priceDisplay').textContent = '$' + price.toLocaleString('es-MX') + ' MXN';
 }
 
 async function signInWithGoogle() {
@@ -592,57 +642,79 @@ function calUrl(mod) {
   return base + '&text=' + t + '&dates=20260620T100000/20260621T190000&location=' + encodeURIComponent('Online') + '&details=' + encodeURIComponent('Taller digital de Comerciales con IA. Instructor: Marcelo Segura. Doble Ads.');
 }
 
+async function sendEmails(nombre, email, telefono, modalidad) {
+  if (!email || !email.includes('@')) return;
+  const mod = modalidad === 'presencial' ? 'presencial' : 'digital';
+  const modalTxt  = mod === 'presencial' ? '🏙️ Presencial · Querétaro' : '💻 Digital · Online';
+  const ubicacion = mod === 'presencial'
+    ? 'Calle 2 #135 Piso 3, Col. Industrial Benito Juárez, Querétaro 76120'
+    : 'Online — link de acceso por correo';
+  const fecha = new Date().toLocaleString('es-MX', { dateStyle: 'full', timeStyle: 'short' });
+  const precio = '$' + PRICES[mod].toLocaleString('es-MX') + ' MXN';
+  const params = {
+    nombre, email,
+    telefono: telefono || '—',
+    modalidad: modalTxt,
+    ubicacion, fecha,
+    monto: precio,
+    cal_url: calUrl(mod),
+  };
+  try {
+    await Promise.all([
+      emailjs.send(EJS_SERVICE_ID, EJS_TPL_AVISO,  params),
+      emailjs.send(EJS_SERVICE_ID, EJS_TPL_ALUMNO, params),
+    ]);
+  } catch(err) {
+    console.error('EmailJS error:', err);
+  }
+}
+
 async function submitForm() {
   const name  = document.getElementById('i-name').value.trim();
   const email = document.getElementById('i-email').value.trim();
   const phone = document.getElementById('i-phone').value.trim();
+
   if (!name)                         { showToast('Ingresa tu nombre.', 'error'); return; }
   if (!email || !email.includes('@')) { showToast('Ingresa un correo válido.', 'error'); return; }
   if (!selModality)                  { showToast('Selecciona una modalidad.', 'error'); return; }
 
   const btn = document.getElementById('bsub');
   btn.disabled = true;
-  btn.innerHTML = '<span class="spin"></span>Enviando...';
-
-  const url       = calUrl(selModality);
-  const modalTxt  = selModality === 'presencial' ? '🏙️ Presencial · Querétaro' : '💻 Digital · Online';
-  const ubicacion = selModality === 'presencial'
-    ? 'Calle 2 #135 Piso 3, Col. Industrial Benito Juárez, Querétaro 76120'
-    : 'Online — link de acceso por correo';
-  const fecha = new Date().toLocaleString('es-MX', { dateStyle: 'full', timeStyle: 'short' });
-
-  const params = {
-    nombre:    name,
-    email:     email,
-    telefono:  phone || '—',
-    modalidad: modalTxt,
-    ubicacion: ubicacion,
-    fecha:     fecha,
-    cal_url:   url,
-  };
+  btn.innerHTML = '<span class="spin"></span>Preparando pago...';
 
   try {
-    await Promise.all([
-      emailjs.send(EJS_SERVICE_ID, EJS_TPL_AVISO,  params),
-      emailjs.send(EJS_SERVICE_ID, EJS_TPL_ALUMNO, params),
-    ]);
-    showSuccess(name, url);
-  } catch(err) {
-    console.error('EmailJS error:', err);
-    showSuccess(name, url);
-    showToast('Inscripción guardada. Revisa tu correo en unos minutos.', 'success');
-  }
-}
+    const res = await fetch(API_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        nombre: name,
+        email:  email,
+        telefono: phone,
+        modalidad: selModality === 'presencial' ? 'Presencial · Querétaro' : 'Digital · Online',
+        precio: PRICES[selModality],
+      }),
+    });
 
-function showSuccess(name, url) {
-  const fn = name.split(' ')[0];
-  document.getElementById('mContent').innerHTML =
-    '<div class="sscr">' +
-    '<div class="sico">✓</div>' +
-    '<h3>¡Listo, ' + fn + '!</h3>' +
-    '<p>Tu lugar está reservado. Te enviamos la confirmación a tu correo con todos los detalles del taller.</p>' +
-    '<a href="' + url + '" target="_blank" class="cbtn">Agregar al calendario →</a>' +
-    '</div>';
+    const data = await res.json();
+
+    if (data.init_point) {
+      // Guardar datos para correos al regresar
+      sessionStorage.setItem('taller_nombre', name);
+      sessionStorage.setItem('taller_email', email);
+      sessionStorage.setItem('taller_telefono', phone);
+      sessionStorage.setItem('taller_modalidad', selModality);
+      // Redirigir a MP Checkout
+      window.location.href = data.init_point;
+    } else {
+      throw new Error('No init_point');
+    }
+
+  } catch(err) {
+    console.error('Error:', err);
+    showToast('Error al conectar con el servidor de pagos. Intenta de nuevo.', 'error');
+    btn.disabled = false;
+    btn.innerHTML = 'Pagar con MercadoPago →';
+  }
 }
 
 function showToast(msg, type) {
