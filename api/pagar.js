@@ -11,6 +11,8 @@ export default async function handler(req, res) {
     return res.status(400).json({ error: 'Faltan datos requeridos' });
   }
 
+  const baseUrl = 'https://taller-ia-dobleads.vercel.app';
+
   const preference = {
     items: [
       {
@@ -23,15 +25,15 @@ export default async function handler(req, res) {
     payer: {
       name: nombre,
       email: email,
-      phone: { number: telefono || '' },
+      phone: { number: String(telefono || '') },
     },
     payment_methods: {
       installments: 12,
     },
     back_urls: {
-      success: `${req.headers.origin || 'https://yeipromero-goat.github.io/taller-ia-dobleads'}?status=success&nombre=${encodeURIComponent(nombre)}&modalidad=${encodeURIComponent(modalidad)}`,
-      failure: `${req.headers.origin || 'https://yeipromero-goat.github.io/taller-ia-dobleads'}?status=failure`,
-      pending: `${req.headers.origin || 'https://yeipromero-goat.github.io/taller-ia-dobleads'}?status=pending&nombre=${encodeURIComponent(nombre)}&modalidad=${encodeURIComponent(modalidad)}`,
+      success: `${baseUrl}?status=success&nombre=${encodeURIComponent(nombre)}&modalidad=${encodeURIComponent(modalidad)}&email=${encodeURIComponent(email)}`,
+      failure: `${baseUrl}?status=failure`,
+      pending: `${baseUrl}?status=pending&nombre=${encodeURIComponent(nombre)}&modalidad=${encodeURIComponent(modalidad)}&email=${encodeURIComponent(email)}`,
     },
     auto_return: 'approved',
     statement_descriptor: 'DOBLE ADS TALLER',
@@ -51,14 +53,14 @@ export default async function handler(req, res) {
     const data = await mpRes.json();
 
     if (!mpRes.ok) {
-      console.error('MP error:', data);
+      console.error('MP error:', JSON.stringify(data));
       return res.status(500).json({ error: 'Error al crear preferencia', detail: data });
     }
 
     return res.status(200).json({ init_point: data.init_point, id: data.id });
 
   } catch (err) {
-    console.error('Server error:', err);
-    return res.status(500).json({ error: 'Error interno del servidor' });
+    console.error('Server error:', err.message);
+    return res.status(500).json({ error: 'Error interno del servidor', message: err.message });
   }
 }
