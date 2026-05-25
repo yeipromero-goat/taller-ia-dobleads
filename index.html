@@ -7,6 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Montserrat:wght@300;400;500;600;700;900&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 <style>
 :root {
@@ -117,7 +118,6 @@ nav{
 .video-wrap video{
   width:100%;height:100%;object-fit:cover;display:block;
 }
-.yt-frame{position:relative;width:100%;height:100%;overflow:hidden;border-radius:inherit;}
 .video-placeholder{
   width:100%;height:100%;
   display:flex;flex-direction:column;align-items:center;justify-content:center;
@@ -342,7 +342,7 @@ footer{background:var(--dark);border-top:1px solid var(--border);padding:2.5rem 
         <path d="M20 15 L31 34 H9 Z" fill="#c9a84c" opacity="0.35"/>
       </svg>
     </div>
-    <div class="logo-text">Doble <span>Ads</span></div>
+    <div class="logo-text">Double <span>Ads</span></div>
   </a>
   <button class="nav-pill" onclick="openModal()">Inscribirme →</button>
 </nav>
@@ -350,7 +350,7 @@ footer{background:var(--dark);border-top:1px solid var(--border);padding:2.5rem 
 <!-- HERO -->
 <section class="hero">
   <div class="hero-left">
-    <div class="eyebrow"><div class="ey-line"></div><span class="ey-txt">Doble Ads presenta</span></div>
+    <div class="eyebrow"><div class="ey-line"></div><span class="ey-txt">Double Ads presenta</span></div>
     <h1>
       <span class="sm">Aprende a hacer</span>
       <span class="ac">Comerciales</span>
@@ -368,7 +368,7 @@ footer{background:var(--dark);border-top:1px solid var(--border);padding:2.5rem 
   <!-- VIDEO VERTICAL -->
   <div class="hero-video">
     <div class="video-wrap" id="videoWrap">
-      <div class="yt-frame">
+      <div class="video-placeholder">
         <div class="vico">🎬</div>
         <p>Cargando video...</p>
       </div>
@@ -383,7 +383,7 @@ footer{background:var(--dark);border-top:1px solid var(--border);padding:2.5rem 
       <div class="pmsi">✓ 6 meses sin intereses con tarjeta de crédito</div>
       <div class="pdiv"></div>
       <div class="dlbl">Fecha del evento</div>
-      <div class="ddate">15 y 16 de mayo de 2026</div>
+      <div class="ddate">20 y 21 de junio de 2026</div>
       <div class="cdown">
         <div class="cbox"><span class="cnum" id="cd-d">--</span><span class="clbl">días</span></div>
         <div class="cbox"><span class="cnum" id="cd-h">--</span><span class="clbl">hrs</span></div>
@@ -398,7 +398,7 @@ footer{background:var(--dark);border-top:1px solid var(--border);padding:2.5rem 
 <!-- PRESENTER BAR -->
 <div class="pbar">
   <div class="pbar-by">
-    Presentado por <strong>Doble Ads</strong> &nbsp;·&nbsp; Instructor: <b>Marcelo Segura</b>
+    Presentado por <strong>Double Ads</strong> &nbsp;·&nbsp; Instructor: <b>Marcelo Segura</b>
   </div>
   <div class="tags">
     <span class="tag">Diploma incluido</span>
@@ -417,7 +417,7 @@ footer{background:var(--dark);border-top:1px solid var(--border);padding:2.5rem 
       <span class="mbadge">🏙️ Presencial · Querétaro</span>
       <h3>Dos días intensivos<br>en la ciudad</h3>
       <ul class="mlist">
-        <li><span>15 y 16 de mayo de 2026</span></li>
+        <li><span>20 y 21 de junio de 2026</span></li>
         <li><span>10:00 a 19:00 h.</span> — 9 horas de clase por día</li>
         <li>Calle 2 #135, piso 3, Col. Industrial Benito Juárez, C.P. 76120</li>
         <li><span>Única fecha del año 2026</span></li>
@@ -428,8 +428,8 @@ footer{background:var(--dark);border-top:1px solid var(--border);padding:2.5rem 
       <span class="mbadge b2">💻 Digital · Online</span>
       <h3>Dos días desde<br>donde estés</h3>
       <ul class="mlist">
-        <li><span>Sesión 1:</span> 15 de mayo, 10:00 a 19:00 h.</li>
-        <li><span>Sesión 2:</span> 16 de mayo, 10:00 a 19:00 h.</li>
+        <li><span>Sesión 1:</span> 20 de junio, 10:00 a 19:00 h.</li>
+        <li><span>Sesión 2:</span> 21 de junio, 10:00 a 19:00 h.</li>
         <li>Transmisión <span>en vivo</span> vía plataforma digital</li>
         <li>Acceso a grabaciones y material descargable</li>
       </ul>
@@ -462,7 +462,7 @@ footer{background:var(--dark);border-top:1px solid var(--border);padding:2.5rem 
   <div class="s-ey"><div class="s-l"></div><span class="s-t">Lo que incluye</span></div>
   <h2>Beneficios del taller</h2>
   <div class="bgrid">
-    <div class="bene"><div class="bico">🎓</div><h4>Diploma Doble Ads</h4><p>Certificado oficial del taller</p></div>
+    <div class="bene"><div class="bico">🎓</div><h4>Diploma Double Ads</h4><p>Certificado oficial del taller</p></div>
     <div class="bene"><div class="bico">🎬</div><h4>9 h de producción</h4><p>Crea comerciales reales en el taller</p></div>
     <div class="bene"><div class="bico">🤖</div><h4>Herramientas de IA</h4><p>Acceso a las mejores herramientas del mercado</p></div>
     <div class="bene"><div class="bico">🏆</div><h4>Material descargable</h4><p>Guías, prompts y plantillas exclusivas</p></div>
@@ -477,19 +477,19 @@ footer{background:var(--dark);border-top:1px solid var(--border);padding:2.5rem 
     <div class="iav">MS</div>
     <div>
       <div class="iname">Marcelo Segura</div>
-      <div class="irole">Instructor · Doble Ads</div>
-      <p class="ibio">Especialista en producción publicitaria con inteligencia artificial. Con Doble Ads enseña a marcas y emprendedores a crear comerciales de ultra alta calidad usando las herramientas de IA más avanzadas del mercado, reduciendo costos de producción sin sacrificar impacto visual ni resultados en ventas.</p>
+      <div class="irole">Instructor · Double Ads</div>
+      <p class="ibio">Especialista en producción publicitaria con inteligencia artificial. Con Double Ads enseña a marcas y emprendedores a crear comerciales de ultra alta calidad usando las herramientas de IA más avanzadas del mercado, reduciendo costos de producción sin sacrificar impacto visual ni resultados en ventas.</p>
     </div>
   </div>
 </section>
 
 <!-- FOOTER -->
 <footer>
-  <div class="fbrand">Doble <span>Ads</span></div>
+  <div class="fbrand">Double <span>Ads</span></div>
   <div class="flinks">
-    <a href="https://www.dobleads.com" target="_blank">dobleads.com</a>
+    <a href="https://www.doubleads.com" target="_blank">doubleads.com</a>
   </div>
-  <p class="fcopy">© 2026 Doble Ads. Todos los derechos reservados.</p>
+  <p class="fcopy">© 2026 Double Ads. Todos los derechos reservados.</p>
 </footer>
 
 <!-- MODAL -->
@@ -497,7 +497,7 @@ footer{background:var(--dark);border-top:1px solid var(--border);padding:2.5rem 
   <div class="modal">
     <button class="mcl" onclick="closeModal()">✕</button>
     <div id="mContent">
-      <div class="mey">Doble Ads</div>
+      <div class="mey">Double Ads</div>
       <h3>Reserva tu lugar</h3>
       <p class="msub">Completa el proceso en menos de 2 minutos.</p>
       <div class="mpr">
@@ -526,10 +526,10 @@ footer{background:var(--dark);border-top:1px solid var(--border);padding:2.5rem 
         <label class="fl">Modalidad</label>
         <div class="mods2">
           <div class="mopt sel" id="op-p" onclick="selMod('presencial')">
-            <span class="olbl">🏙️ Presencial</span><span class="odt">15 y 16 mayo · Querétaro</span>
+            <span class="olbl">🏙️ Presencial</span><span class="odt">20 y 21 junio · Querétaro</span>
           </div>
           <div class="mopt" id="op-o" onclick="selMod('digital')">
-            <span class="olbl">💻 Digital</span><span class="odt">15 y 16 mayo · Online</span>
+            <span class="olbl">💻 Digital</span><span class="odt">20 y 21 junio · Online</span>
           </div>
         </div>
       </div>
@@ -551,22 +551,31 @@ const EJS_TPL_AVISO  = 'template_4f3c2cp';   // aviso para ti
 const EJS_TPL_ALUMNO = 'template_yh5xpun';   // confirmación para el alumno
 emailjs.init(EJS_PUBLIC_KEY);
 
-// ── Video YouTube ─────────────────────────────────────────
-const YT_VIDEO_ID = 'fcCpMsP52uQ';
-(function() {
-  const wrap = document.getElementById('videoWrap');
-  if (wrap) {
-    wrap.innerHTML = `<iframe
-      src="https://www.youtube.com/embed/${YT_VIDEO_ID}?autoplay=1&mute=1&loop=1&playlist=${YT_VIDEO_ID}&controls=0&showinfo=0&rel=0&modestbranding=1"
-      frameborder="0"
-      allow="autoplay; encrypted-media"
-      allowfullscreen
-      style="width:100%;height:100%;position:absolute;top:0;left:0;border-radius:inherit;">
-    </iframe>`;
-  }
-})();
+// ── Supabase (opcional) ──────────────────────────────────
+const SUPABASE_URL      = 'https://TU_PROYECTO.supabase.co';
+const SUPABASE_ANON_KEY = 'TU_ANON_KEY';
+const VIDEO_BUCKET      = 'videos';
+const VIDEO_FILE        = 'promo.mp4';
 
-let sb = null;
+let sb;
+try { sb = window.supabase?.createClient(SUPABASE_URL, SUPABASE_ANON_KEY); } catch(e){}
+
+async function loadPromoVideo() {
+  const wrap = document.getElementById('videoWrap');
+  if (!sb || SUPABASE_URL.includes('TU_PROYECTO')) {
+    wrap.innerHTML = `<div class="video-placeholder"><div class="vico">🎬</div><p>Configura Supabase para cargar el video.</p></div>`;
+    return;
+  }
+  try {
+    const { data } = sb.storage.from(VIDEO_BUCKET).getPublicUrl(VIDEO_FILE);
+    if (data?.publicUrl) {
+      wrap.innerHTML = `<video src="${data.publicUrl}" autoplay muted loop playsinline></video>`;
+    }
+  } catch(e) {
+    wrap.innerHTML = `<div class="video-placeholder"><div class="vico">🎬</div><p>No se pudo cargar el video.</p></div>`;
+  }
+}
+loadPromoVideo();
 
 let selModality = null;
 
@@ -588,16 +597,18 @@ function selMod(m) {
 }
 
 async function signInWithGoogle() {
-  showToast('Google Login próximamente disponible.', 'error');
+  if (!sb || SUPABASE_URL.includes('TU_PROYECTO')) { showToast('Configura Supabase para activar Google Login.', 'error'); return; }
+  const { error } = await sb.auth.signInWithOAuth({ provider: 'google', options: { redirectTo: window.location.href } });
+  if (error) showToast('Error al conectar con Google.', 'error');
 }
 
 function calUrl(mod) {
   const base = 'https://calendar.google.com/calendar/render?action=TEMPLATE';
-  const t = encodeURIComponent('Taller Comerciales con IA · Doble Ads');
+  const t = encodeURIComponent('Taller Comerciales con IA · Double Ads');
   if (mod === 'presencial') {
-    return `${base}&text=${t}&dates=20260515T100000/20260516T190000&location=${encodeURIComponent('Calle 2 #135 Piso 3, Col. Industrial Benito Juárez, Querétaro 76120')}&details=${encodeURIComponent('Taller presencial de Comerciales con IA. Instructor: Marcelo Segura. Doble Ads.')}`;
+    return `${base}&text=${t}&dates=20260620T100000/20260621T190000&location=${encodeURIComponent('Calle 2 #135 Piso 3, Col. Industrial Benito Juárez, Querétaro 76120')}&details=${encodeURIComponent('Taller presencial de Comerciales con IA. Instructor: Marcelo Segura. Double Ads.')}`;
   }
-  return `${base}&text=${t}&dates=20260515T100000/20260516T190000&location=${encodeURIComponent('Online')}&details=${encodeURIComponent('Taller digital de Comerciales con IA. Instructor: Marcelo Segura. Doble Ads.')}`;
+  return `${base}&text=${t}&dates=20260620T100000/20260621T190000&location=${encodeURIComponent('Online')}&details=${encodeURIComponent('Taller digital de Comerciales con IA. Instructor: Marcelo Segura. Double Ads.')}`;
 }
 
 async function submitForm() {
@@ -612,7 +623,15 @@ async function submitForm() {
   btn.disabled = true;
   btn.innerHTML = '<span class="spin"></span>Enviando...';
 
-  // (Supabase desactivado — integrar cuando esté configurado)
+  // Guardar en Supabase si está configurado
+  if (sb && !SUPABASE_URL.includes('TU_PROYECTO')) {
+    try {
+      await sb.from('registros').insert([{
+        nombre: name, email, telefono: phone,
+        modalidad: selModality, creado_en: new Date().toISOString()
+      }]);
+    } catch(e) {}
+  }
 
   const url       = calUrl(selModality);
   const modalTxt  = selModality === 'presencial' ? '🏙️ Presencial · Querétaro' : '💻 Digital · Online';
@@ -662,7 +681,7 @@ function showToast(msg, type='success') {
 }
 
 function tick() {
-  const diff = new Date('2026-05-15T10:00:00') - new Date();
+  const diff = new Date('2026-06-20T10:00:00') - new Date();
   if (diff <= 0) {
     ['cd-d','cd-h','cd-m','cd-s'].forEach(id => document.getElementById(id).textContent = '00');
     return;
